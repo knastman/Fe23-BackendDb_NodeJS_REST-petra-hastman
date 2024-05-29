@@ -1,0 +1,20 @@
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/headerNav') %>
+  <main>
+    <h1>Slutprojekt - Backend DB</h1>
+    
+    <div class="flexBoxMenu">
+      <div>
+        <h2>Välj tabell</h2>
+        <%- include('partials/tablesMenu') %>
+      </div>
+      <div class="tableList">
+        <%- include('partials/tableMain') %>
+      </div>
+    </div>
+
+
+
+  </main>  
+  <%- include('partials/footer') %>

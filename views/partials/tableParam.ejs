@@ -1,0 +1,36 @@
+
+<h2><%= pageTitle; %> med länkar för varje parameter</h2>
+<% if (typeof dbData !== 'undefined' && dbData.length > 0) { %> 
+<table class="databaseTableParam">
+  <thead>
+    <tr>
+      <% for (const header of Object.keys(dbData[0])) { %> 
+        <th><h3><%= header %></h3></th>
+      <% } %> 
+    </tr>
+  </thead>
+  <tbody>
+    <% for (const row of dbData) { %>
+      <tr>
+        <% for (const [key, value] of Object.entries(row)) { %>
+          <td>
+            <% if (key === 'id') { %>
+              <a href="/student?id=<%= value %>"><%= value %></a>
+            <% } else if (key === 'fName') { %>
+              <a href="/student?fname=<%= value %>"><%= value %></a>
+            <% } else if (key === 'lName') { %>
+              <a href="/student?lname=<%= value %>"><%= value %></a>
+            <% } else if (key === 'town') { %>
+              <a href="/student?town=<%= value %>"><%= value %></a>
+            <% } else { %>
+              <%= value %>
+            <% } %>
+          </td>
+        <% } %>
+      </tr>
+    <% } %> 
+  </tbody>
+</table>
+<% } else { %>
+  <p>No data available.</p>
+<% } %>

@@ -1,0 +1,83 @@
+
+<h2>Välj förnamn, efternamn eller stad för mer info</h2>
+<p>Varje parameter är en länk för alla med den parametern gemensamt</p>
+
+
+<% if (typeof dbData !== 'undefined' && dbData.length > 0) { %> 
+<table class="databaseTableParam">
+  <thead>
+    <tr>
+      <% for (const header of Object.keys(dbData[0])) { %> 
+        <th><h3><%= header %></h3></th>
+      <% } %> 
+    </tr>
+  </thead>
+  <tbody>
+    <% for (const row of dbData) { %>
+      <tr>
+        <% for (const [key, value] of Object.entries(row)) { %>
+          <td>
+            <% if (key === 'id') { %>
+              <a href="/moreinfo?id=<%= value %>"><%= value %></a>
+            <% } else if (key === 'fName') { %>
+              <a href="/moreinfo?fname=<%= value %>"><%= value %></a>
+            <% } else if (key === 'lName') { %>
+              <a href="/moreinfo?lname=<%= value %>"><%= value %></a>
+            <% } else if (key === 'town') { %>
+              <a href="/moreinfo?town=<%= value %>"><%= value %></a>
+            <% } else { %>
+              <%= value %>
+            <% } %>
+          </td>
+        <% } %>
+      </tr>
+    <% } %> 
+  </tbody>
+</table>
+<% } else { %>
+  <p>No data available.</p>
+<% } %>
+
+
+<hr>
+
+
+<div class="tableList">
+  <h2>Välj en student för info om vilka kurser hen går</h2>
+  <p>Samma funktionalitet som startsidan</p>
+  <% if(typeof dbData != 'undefined'){ %> 
+  <table class="databaseTable">
+    <thead>
+      <tr>
+        <% for (const header of Object.keys(dbData[0]) ) { %> 
+          <th><h3><%= header; %></h3></th>
+        <% } %> 
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const row of dbData ){%>
+      <tr>
+        <% const studentId = row.id; %>
+        <% const fname = row.fName; %>
+        <% const lname = row.lName; %>
+        <% const town = row.town; %>
+        <% const queryParams = `id=${studentId}&fname=${fname}&lname=${lname}&town=${town}`; %>
+        <% for (const [key, value] of Object.entries(row)) { %>
+        <td>
+          <a href="/student?<%= queryParams %>"><%= value %></a>
+        </td>
+        <% } %> 
+      </tr>
+      <% }; %> 
+    </tbody>
+  </table>
+  <% }; %>
+</div>
+
+
+
+
+
+
+
+

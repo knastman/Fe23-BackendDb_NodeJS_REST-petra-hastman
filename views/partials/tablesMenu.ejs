@@ -1,0 +1,18 @@
+
+
+<nav class="tablesNavigation">
+  <form id="tablesForm" action="/" method="POST">
+    <% if(typeof dbTables != 'undefined'){%>  
+      <div class="gridList">
+        <% dbTables.forEach( row => {%>
+          <div>
+            <% Object.values(row).forEach( value => {%>
+            <button type="submit" class="tablesAsideBtn" name = tableMenuBtn value = '<%= value; %>';"><%= value; %></button>
+            <% }); %>
+          </div>
+        <% }); %>
+    <% } %>
+  </form>
+</nav>
+
+

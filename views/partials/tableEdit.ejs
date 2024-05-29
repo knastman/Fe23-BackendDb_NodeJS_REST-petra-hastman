@@ -1,0 +1,29 @@
+
+
+<div class="tableList">
+  <h2>Välj en rad för att redigera</h2>
+  <% if(typeof dbData != 'undefined'){ %> 
+  <table class="databaseTable">
+    <thead>
+      <tr>
+        <% for (const header of Object.keys(dbData[0]) ) { %> 
+          <th><h3><%= header; %></h3></th>
+        <% } %> 
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const row of dbData ){%>
+      <tr>
+        <% const id = row.id; %>
+        <% const queryParams = `id=${id}`; %>
+        <% for (const [key, value] of Object.entries(row)) { %>
+        <td>
+          <a href="/editData?<%= queryParams %>"><%= value %></a>
+        </td>
+        <% } %> 
+      </tr>
+      <% }; %> 
+    </tbody>
+  </table>
+  <% }; %>
+</div>

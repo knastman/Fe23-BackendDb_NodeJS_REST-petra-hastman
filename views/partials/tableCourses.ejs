@@ -1,0 +1,63 @@
+
+
+
+
+<div class="tableList">
+  <!-- Puts data from database in table -->
+
+  <h2>Välj en kurs för att se vilka studenter som går i den</h2>
+  <% if(typeof dbData != 'undefined'){ %> 
+  <table class="databaseTable">
+    <thead>
+      <tr>
+        <% for (const header of Object.keys(dbData[0]) ) { %> 
+          <th><h3><%= header; %></h3></th>
+        <% } %> 
+      </tr>
+    </thead>
+    <tbody>
+      <% for (const row of dbData ){%>
+      <tr>
+        <% const courseID = row.id; %>
+        <% const courseName = row.name; %>
+        <% const desc = row.description; %>
+        <% const queryParams = `id=${courseID}&name=${courseName}`; %> <!-- Construct the query parameters -->
+        <% for (const [key, value] of Object.entries(row)) { %>
+        
+        <td>
+          <a href="/course?<%= queryParams %>"><%= value %></a>
+        </td>
+        <% } %> 
+      </tr>
+      <% }; %> 
+    </tbody>
+  </table>
+  <% }; %>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

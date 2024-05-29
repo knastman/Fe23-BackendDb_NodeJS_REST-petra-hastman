@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/headerNav') %>
+  <main>
+
+    <h1>Studentinfo</h1>
+
+     <div class="tableList">  
+        <table class="databaseTable">
+          <thead>
+            <tr>
+              <th colspan="2"><h2>Alla studenter som</h2></th>
+            </tr>
+          </thead>
+     
+          <tbody>
+          <% if(typeof dbData != 'undefined'){ %> 
+            <% for (const row of dbData ){%>
+            <tr>
+              <% for (const value of Object.values(row) ){%>
+              <td><%= value; %></td>
+              <% } %> 
+            </tr>
+            <% }; %> 
+          </tbody>
+        </table>
+        <% }; %>
+     </div>
+
+
+
+
+
+
+
+
+
+  </main>  
+  <%- include('partials/footer') %>
