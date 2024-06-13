@@ -1,7 +1,7 @@
 
     <div class="tableList">
       <% if(tableName == 'students'){ %> 
-        <h2>Välj en stundent för info om vilka kurser hen går</h2>
+        <h2>Välj en stundent för kursinformation</h2>
       <% } %> 
 
       <% if(tableName == 'courses'){ %> 
@@ -14,7 +14,25 @@
         <table class="databaseTable">
           <thead>
             <tr>
-              <% for (const header of Object.keys(dbData[0]) ) { %> 
+              <% for (let header of Object.keys(dbData[0]) ) { %> 
+                <!-- Bättre tabellrubriker-->
+                <% 
+                  if ( header == "fName" ){
+                    header = "Förnamn";
+                  }
+                  if ( header == "lName" ){
+                    header = "Efternamn";
+                  }
+                  if ( header == "town" ){
+                    header = "Stad";
+                  }
+                  if ( header == "name" ){
+                    header = "Kursnamn";
+                  }
+                  if ( header == "description" ){
+                    header = "Kursbeskrivning";
+                  }
+                %> 
                 <th><h3><%= header; %></h3></th>
               <% } %> 
               <th colspan="2"><h3>Actions</h3></th>
@@ -23,7 +41,6 @@
           
           <tbody>
             <% for (const row of dbData ){%>
-
 
                <!-- STUDENT LIST -->  
               <% if(tableName == 'students'){ %> 

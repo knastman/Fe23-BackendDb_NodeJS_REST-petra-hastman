@@ -36,7 +36,7 @@ app.get('/', async (req, res) => {
 
 let currentTable;
 app.post('/', async (req, res) => {
-  console.log(req.body); // tex { tableAsideBtn: 'students' }
+  console.log(req.body); 
   const dbTables = await getTables();
 
   const pageTitle = "Select row"; 
@@ -46,19 +46,21 @@ app.post('/', async (req, res) => {
 
 
   if(req.body.tableMenuBtn){
-      let tableName = req.body.tableMenuBtn;
-      let sql = `SELECT * FROM ${req.body.tableMenuBtn}`;
-      dbData = await db.query(sql);
-      res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
-  }else if(req.body.delRowBtn){
-      let tableName = req.body.delRowBtn.split(",")[0];
-      let sql = `SELECT * FROM ${req.body.delRowBtn.split(",")[0]}`;  
-      dbData = await db.query(sql);
-      res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
-  }else{
-      errorMsg = "table name missing";
-      dbData = [{}];
-      res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
+    let tableName = req.body.tableMenuBtn;
+    let sql = `SELECT * FROM ${req.body.tableMenuBtn}`;
+    dbData = await db.query(sql);
+    res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
+  } 
+  else if(req.body.delRowBtn){
+    let tableName = req.body.delRowBtn.split(",")[0];
+    let sql = `SELECT * FROM ${req.body.delRowBtn.split(",")[0]}`;  
+    dbData = await db.query(sql);
+    res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
+  }
+  else{
+    errorMsg = "table name missing";
+    dbData = [{}];
+    res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
   }
 
   //remove row
@@ -325,6 +327,7 @@ app.get('/moreinfo', async (req, res) => {
 
   let sql = '';
   let queryParams = [];
+  let paramName = '';
 
   if (id) {
     sql = `SELECT * FROM students WHERE id = ${id}`;
@@ -332,12 +335,15 @@ app.get('/moreinfo', async (req, res) => {
   } else if (town) {
     sql = `SELECT * FROM students WHERE town = '${town}'`;
     queryParams.push(town);
+    paramName = 'bor i ' + town;
   } else if (fname) {
     sql = `SELECT * FROM students WHERE fname = '${fname}'`;
     queryParams.push(fname);
+    paramName = 'heter ' + fname + ' i förnamn';
   } else if (lname) {
     sql = `SELECT * FROM students WHERE lname = '${lname}'`;
     queryParams.push(lname);
+    paramName = 'heter ' + lname + ' i efternamn';
   } else {
     return res.status(400).send('A valid query parameter (id, town, fname, lname) is required');
   }
@@ -349,10 +355,10 @@ app.get('/moreinfo', async (req, res) => {
       return res.status(404).send('No matching records found');
     }
 
-    const pageTitle = 'More Information';
+    const pageTitle = 'More Information on parameter';
     console.log('dbData');
     console.log(dbData);
-    res.render('moreinfo', { pageTitle, dbData });
+    res.render('moreinfo', { pageTitle, dbData, paramName });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);

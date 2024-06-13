@@ -7,7 +7,18 @@
 <table class="databaseTableParam">
   <thead>
     <tr>
-      <% for (const header of Object.keys(dbData[0])) { %> 
+      <% for (let header of Object.keys(dbData[0])) { %> 
+        <% 
+        if ( header == "fName" ){
+          header = "Förnamn";
+        }
+        if ( header == "lName" ){
+          header = "Efternamn";
+        }
+        if ( header == "town" ){
+          header = "Stad";
+        }
+      %> 
         <th><h3><%= header %></h3></th>
       <% } %> 
     </tr>
@@ -49,7 +60,18 @@
   <table class="databaseTable">
     <thead>
       <tr>
-        <% for (const header of Object.keys(dbData[0]) ) { %> 
+        <% for (let header of Object.keys(dbData[0]) ) { %> 
+          <% 
+          if ( header == "fName" ){
+            header = "Förnamn";
+          }
+          if ( header == "lName" ){
+            header = "Efternamn";
+          }
+          if ( header == "town" ){
+            header = "Stad";
+          }
+        %> 
           <th><h3><%= header; %></h3></th>
         <% } %> 
       </tr>
