@@ -41,11 +41,17 @@
 <hr>
 
 
+
+
 <div class="tableList">
   <h2>Välj en student för info om vilka kurser hen går</h2>
   <p>Samma funktionalitet som startsidan</p>
   <% if(typeof dbData != 'undefined'){ %> 
-  <table class="databaseTable">
+
+
+<form id="dataForm" action="/students" method="POST"> 
+
+  <table class="databaseTable studenttable">
     <thead>
       <tr>
         <% for (let header of Object.keys(dbData[0]) ) { %> 
@@ -66,11 +72,25 @@
           <a href="/student?<%= queryParams %>"><%= value %></a>
         </td>
         <% } %> 
+
+
+        <!-- EDIT -->       
+        <td>
+          <% const table = "students"; %>
+          <% const queryParamsEdit = `id=${row.id}&table=${table}`; %>
+          <button><a href="/editData?<%= queryParamsEdit %>">Edit row</a></button>
+        </td> 
+        <!-- DELETE --> 
+        <td>
+          <button type="submit" id="delRowBtn" name="delRowBtn" value="<%= table; %>,<%= row.id; %>">Delete row</button>
+        </td> 
+
       </tr>
       <% }; %> 
     </tbody>
   </table>
   <% }; %>
+</form> 
 </div>
 
 

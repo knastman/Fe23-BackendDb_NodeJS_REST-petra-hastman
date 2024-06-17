@@ -44,7 +44,7 @@ app.post('/', async (req, res) => {
     dbData = await db.query(sql);
     res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
   } 
-  else if(req.body.delRowBtn){ //Hämtar info efter raderad rad?
+  else if(req.body.delRowBtn){ 
     let tableName = req.body.delRowBtn.split(",")[0];
     let id = req.body.delRowBtn.split(",")[1];
 
@@ -129,8 +129,9 @@ app.post('/editData', async (req, res) => {
 
 //ALL data - students
 app.get('/students', async (req, res) => {
+  const table =  "students";
   const pageTitle = "All student data";
-  const sql = `SELECT * FROM students`;
+  const sql = `SELECT * FROM ${table}`;
 
   try {
     const dbData = await db.query(sql); 
@@ -143,9 +144,41 @@ app.get('/students', async (req, res) => {
 });
 
 
-//Studentinfo ID från URL - what courses
+app.post('/students', async (req, res) => {
+  const table =  "students";
+  // const sql = `SELECT * FROM ${table}`;
+  console.log("req.body i students");
+  console.log(req.body);
+  console.log('req.body.delRowBtn');
+  console.log(req.body.delRowBtn);
+  let dbData=[];
+
+  if(req.body.delRowBtn){ 
+    // let tableName = req.body.delRowBtn.split(",")[0];
+    let id = req.body.delRowBtn.split(",")[1];
+    console.log('id del i students');
+    console.log(id);
+
+    // remove row
+    await db.query(`DELETE FROM ${table} WHERE id=${id}`);
+
+    let sql = `SELECT * FROM ${table}`;
+    dbData = await db.query(sql);
+    res.render('students', {table, dbData});
+
+  }
+  else{
+    errorMsg = "table name missing";
+    dbData = [{}];
+    res.render('students', {pageTitle,table, dbData, dbTables, errorMsg});
+  }
+
+});
+
+
+//Studentinfo ID från URL
 app.get('/student', async (req, res) => {
-  const {id} = req.query; // Extract the id from the query parameters
+  const {id} = req.query; 
 
   if (!id) {
     return res.status(400).send('ID is required');
@@ -163,11 +196,11 @@ app.get('/student', async (req, res) => {
     const coursesData = await db.query(coursesSql, id);
 
     if (studentData.length === 0) {
-      return res.status(404).send('Student not found i app');
+      return res.status(404).send('Student not found');
     }
 
     if (coursesData.length === 0) {
-      return res.status(404).send('No courses found for this student i app');
+      return res.status(404).send('No courses found for this student');
     }
 
     const student = studentData[0];
