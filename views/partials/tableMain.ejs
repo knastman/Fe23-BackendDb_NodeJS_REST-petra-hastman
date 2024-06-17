@@ -1,7 +1,8 @@
-
+    
     <div class="tableList">
       <% if(tableName == 'students'){ %> 
-        <h2>Välj en stundent för kursinformation</h2>
+        <h2>Välj en stundent/rad för kursinformation</h2>
+        <p>Eller välj knapp under "Actions" för att redigera/ta bort hela raden</p>
       <% } %> 
 
       <% if(tableName == 'courses'){ %> 
@@ -15,33 +16,14 @@
           <thead>
             <tr>
               <% for (let header of Object.keys(dbData[0]) ) { %> 
-                <!-- Bättre tabellrubriker-->
-                <% 
-                  if ( header == "fName" ){
-                    header = "Förnamn";
-                  }
-                  if ( header == "lName" ){
-                    header = "Efternamn";
-                  }
-                  if ( header == "town" ){
-                    header = "Stad";
-                  }
-                  if ( header == "name" ){
-                    header = "Kursnamn";
-                  }
-                  if ( header == "description" ){
-                    header = "Kursbeskrivning";
-                  }
-                %> 
                 <th><h3><%= header; %></h3></th>
               <% } %> 
-              <th colspan="2"><h3>Actions</h3></th>
+              <th colspan="2" class="actions"><h3>Actions</h3></th>
             </tr>
           </thead>
           
           <tbody>
             <% for (const row of dbData ){%>
-
                <!-- STUDENT LIST -->  
               <% if(tableName == 'students'){ %> 
                 <% const studentId = row.id; %>
@@ -49,6 +31,7 @@
                 <% const lname = row.lName; %>
                 <% const town = row.town; %>
                 <% const queryParams = `id=${studentId}&fname=${fname}&lname=${lname}&town=${town}`; %>
+                <% const queryParamsEdit = `id=${studentId}`; %>
                 <% for (const [key, value] of Object.entries(row)) { %>
                   <td>
                     <a href="/student?<%= queryParams %>"><%= value %></a>
@@ -61,7 +44,7 @@
                 <% const courseID = row.id; %>
                 <% const courseName = row.name; %>
                 <% const desc = row.description; %>
-                <% const queryParams = `id=${courseID}&name=${courseName}`; %> <!-- Construct the query parameters -->
+                <% const queryParams = `id=${courseID}&name=${courseName}`; %>
                 <% for (const [key, value] of Object.entries(row)) { %>
                   <td>
                     <a href="/course?<%= queryParams %>"><%= value %></a>
@@ -78,25 +61,29 @@
                   </td>
                 <% } %> 
               <% } %> 
-
         
               <% if(Object.values(row).length>0){ %>
-              <!-- Edit -->  
+              <!-- EDIT -->  
               <td>
-                <button type="submit" id="editbtn" name="editbtn" value="<%= tableName; %>,<%= row.id; %> ">Edit row</button>
+                <% const queryParamsEdit = `id=${row.id}&table=${tableName}`; %>
+                <button><a href="/editData?<%= queryParamsEdit %>">Edit row</a></button>
               </td>  
-  
+              
               <!-- DELETE --> 
               <td>
                 <button type="submit" id="delRowBtn" name="delRowBtn" value="<%= tableName; %>,<%= row.id; %>">Delete row</button>
               </td> 
-
-
               <% }; %> 
            
-
             </tr>
+
+
             <% }; %> 
+            <tr>
+              <th colspan="6">
+                 <%= pageTitle; %>
+              </th>
+            </tr>
           </tbody>
         </table>
       </form>

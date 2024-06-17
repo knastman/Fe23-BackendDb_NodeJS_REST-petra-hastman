@@ -1,4 +1,4 @@
-databaseTable* {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -18,12 +18,19 @@ html {
 
 }
 
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+
 .hide{
   display: none;
-  }
-  
-
-
+}
 
 
 img{
@@ -91,8 +98,6 @@ a:hover {
 #mainMenu li a {
   color:#2c7174;
 }
-
-
 
 .main-navigation ul {
   margin: 0;
@@ -176,6 +181,7 @@ a:hover {
 
 
 /*********** TABLE **************/
+
 .tableList{
   /* background-color:#098e71; */
   padding:10px;
@@ -188,15 +194,86 @@ a:hover {
   width: 80%;
   margin: 0 auto;
   display: table;
-  padding: 0 0 2em 0;
+  padding: 0.5em 0 0.5em 0;
 }
 
 .databaseTable a, .databaseTableParam a {
   color:azure;
 }
+.databaseTable button a, .databaseTable button {
+  color:#4097ab;
+}
+.databaseTable button:hover {
+  color:#edf0f0;
+  background-color: #58a4a4;
+  border: 1px solid #417878;
+}
+.databaseTable button a:hover{
+  color:#edf0f0;
+  background-color: #58a4a4;
+}
+
 .databaseTableParam a:hover {
   text-decoration: underline;
 }
+
+
+
+/* Button */
+
+
+button{
+  background-color: #fff;
+  border: 1px solid #d5d9d9;
+  border-radius: 8px;
+  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+  box-sizing: border-box;
+  color: #0f1111;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 13px;
+  line-height: 29px;
+  padding: 0 10px 0 11px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  /* width: 120px; */
+}
+
+/* button:hover {
+  background-color: #58a4a4;
+} */
+
+/* button:focus {
+  border-color: #008296;
+  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+  outline: 0;
+} */
+
+.formButton{
+  margin-top:10px;
+  padding: 0.4em 1.8em;
+  border: none;
+  outline: none;
+  color: black;
+  background: #FFF;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+
 
 
 .databaseTable, .databaseTableParam {
@@ -350,65 +427,10 @@ form div{
 
 
 
-/* Button */
 
-
-button{
-  background-color: #fff;
-  border: 1px solid #d5d9d9;
-  border-radius: 8px;
-  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
-  box-sizing: border-box;
-  color: #0f1111;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 13px;
-  line-height: 29px;
-  padding: 0 10px 0 11px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  /* width: 120px; */
-}
-
-button:hover {
-  background-color: #f7fafa;
-}
-
-button:focus {
-  border-color: #008296;
-  box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
-  outline: 0;
-}
-
-
-
-.formButton{
-  margin-top:10px;
-  padding: 0.4em 1.8em;
-  border: none;
-  outline: none;
-  color: black;
-  background: #FFF;
-  cursor: pointer;
-  position: relative;
-  z-index: 0;
-  border-radius: 10px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
 
 .tablesNavigation{
   text-align: center;
-  margin-bottom: 2em;
   background-color: #b8cdd2;
   padding: 20px;
   background: rgb(158, 188, 194);
@@ -416,7 +438,7 @@ button:focus {
   background-color: #ffffff;
   background-image: linear-gradient(350deg, #c6d8e7 0%, #335c81 94%);
 }
+
 .tablesNavigation button{
-  width:200px;
-  
+  width:200px; 
 }

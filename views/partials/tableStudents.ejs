@@ -8,17 +8,6 @@
   <thead>
     <tr>
       <% for (let header of Object.keys(dbData[0])) { %> 
-        <% 
-        if ( header == "fName" ){
-          header = "Förnamn";
-        }
-        if ( header == "lName" ){
-          header = "Efternamn";
-        }
-        if ( header == "town" ){
-          header = "Stad";
-        }
-      %> 
         <th><h3><%= header %></h3></th>
       <% } %> 
     </tr>
@@ -49,7 +38,6 @@
   <p>No data available.</p>
 <% } %>
 
-
 <hr>
 
 
@@ -61,17 +49,6 @@
     <thead>
       <tr>
         <% for (let header of Object.keys(dbData[0]) ) { %> 
-          <% 
-          if ( header == "fName" ){
-            header = "Förnamn";
-          }
-          if ( header == "lName" ){
-            header = "Efternamn";
-          }
-          if ( header == "town" ){
-            header = "Stad";
-          }
-        %> 
           <th><h3><%= header; %></h3></th>
         <% } %> 
       </tr>

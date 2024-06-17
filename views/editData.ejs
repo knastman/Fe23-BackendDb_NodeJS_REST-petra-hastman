@@ -2,41 +2,52 @@
 <body>
   <%- include('partials/headerNav') %>
   <main>
-    <h1>Edit data for id: <%= rowId %> </h1>
+    <h1>Redigera post</h1>
+    <h2><%= successMsg %> </h2>
 
+    <form id="editForm" action="/editData" method="POST">
+      <table class="databaseTable">
+        <thead>
+          <tr>
+            <!-- <th colspan="2">Info</th> -->
+            <% if(typeof dbData != 'undefined'){ %> 
+              <% for (const header of Object.keys(dbData[0])) { %> 
+                <th><h3><%= header %></h3></th>
+              <% } %>  
+            <% } %>
+          </tr>
+        </thead>
+        <tbody>
+        <% if(typeof dbData != 'undefined'){ %> 
+          <% for (const row of dbData ){%>
+          <tr>
+            <% for (const [key, value] of Object.entries(row)){ %> 
+              <td>
+                <input type="text" id="" name="<%= key; %>" value="<%= value; %>">
+              </td>
+            <% } %> 
+            <td>
+              <button type="submit" id="editBtn" name="editBtn" value="<%= table; %>,<%= row.id; %>">Submit edit</button>
+            </td>
+          </tr>
+          <% }; %> 
+        </tbody>
+      </table>
 
-    
+      <% } else { %>
+        <p>No data available.</p>
 
- <form id="editForm" action="/editData" method="POST">
-    <table class="databaseTable">
-      <thead>
-        <tr>
-          <!-- <th colspan="2">Info</th> -->
-          <% for (const header of Object.keys(dbData[0])) { %> 
-            <th><h3><%= header %></h3></th>
-          <% } %>  
-        </tr>
-      </thead>
-      <tbody>
-      <% if(typeof dbData != 'undefined'){ %> 
-        <% for (const row of dbData ){%>
-        <tr>
-          <% for (const value of Object.values(row) ){%>
-            <td><input type="text" id="" value="<%= value; %>"></td>
-          <% } %> 
-          <td>
-            <button type="submit" id="editBtn" name="editBtn" value="<%= tableName; %>,<%= row.id; %>">Submit edit</button>
-          </td>
-        </tr>
-        <% }; %> 
-      </tbody>
-    </table>
-    <% } else { %>
-      <p>No data available.</p>
-    <% } %>
+      <% } %>
 
-  </form>
+    </form>
 
 
   </main>  
   <%- include('partials/footer') %>
+
+
+
+
+
+
+
