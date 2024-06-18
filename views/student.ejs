@@ -3,25 +3,36 @@
   <%- include('partials/headerNav') %>
   <main>
 
-    <h1>Studentinfo</h1>
-    <h2><%= studentInfo; %></h2>
+    <h1>Kursinfo om student</h1>
 
      <div class="tableList">  
         <table class="databaseTable">
           <thead>
             <tr>
-              <th colspan="2"><h2><%= studentName; %> går i följande kurser:</h2></th>
+              <th><h2>Student</h2></th>
+              <th><h2>Kurser: </h2></th>
             </tr>
           </thead>
           <tbody>
           <% if(typeof dbData != 'undefined'){ %> 
-            <% for (const row of dbData ){%>
             <tr>
-              <% for (const value of Object.values(row) ){%>
-              <td><%= value; %></td>
-              <% } %> 
+              <% for (const row of dbData2 ){%>
+              <td>
+                <% for (const value of Object.values(row) ){%>
+                  <%= value; %>
+                <% } %> 
+              </td>
+              <td>
+                <ul>
+                  <% for (const row of dbData ){%>
+                    <% for (const value of Object.values(row) ){%>
+                      <li><%= value; %></li>
+                    <% } %> 
+                  <% }; %> 
+                </ul>
+              </td>
             </tr>
-            <% }; %> 
+           <% } %> 
           </tbody>
         </table>
         <% }; %>

@@ -144,52 +144,23 @@ app.get('/students', async (req, res) => {
 });
 
 
-app.post('/students', async (req, res) => {
-  const table =  "students";
-  // const sql = `SELECT * FROM ${table}`;
-  console.log("req.body i students");
-  console.log(req.body);
-  console.log('req.body.delRowBtn');
-  console.log(req.body.delRowBtn);
-  let dbData=[];
-
-  if(req.body.delRowBtn){ 
-    // let tableName = req.body.delRowBtn.split(",")[0];
-    let id = req.body.delRowBtn.split(",")[1];
-    console.log('id del i students');
-    console.log(id);
-
-    // remove row
-    await db.query(`DELETE FROM ${table} WHERE id=${id}`);
-
-    let sql = `SELECT * FROM ${table}`;
-    dbData = await db.query(sql);
-    res.render('students', {table, dbData});
-
-  }
-  else{
-    errorMsg = "table name missing";
-    dbData = [{}];
-    res.render('students', {pageTitle,table, dbData, dbTables, errorMsg});
-  }
-
-});
-
-
-//Studentinfo ID från URL
-app.get('/student', async (req, res) => {
-  const {id} = req.query; 
+//Kurser för student via ID 
+app.get('/students/:id/courses', async (req, res) => {
+  const {id} = req.params;
 
   if (!id) {
     return res.status(400).send('ID is required');
   }
 
-  const studentSql = `SELECT fname, lname, town FROM students WHERE id = ${id}; `;
-
-  const coursesSql= `SELECT courses.id, courses.name FROM courses
+  const coursesSql= `SELECT courses.name FROM courses
   JOIN students_courses ON courses.id = students_courses.courses_id
   JOIN students ON students_courses.students_id = students.id
   WHERE students.id = ${id}; `;
+  
+  const studentSql = `SELECT fname, lname, town FROM students WHERE id = ${id}; `;
+  // const sql = `SELECT * FROM students WHERE id=${id}`;
+  console.log('studentSql');
+  console.log(studentSql);
 
   try {
     const studentData = await db.query(studentSql, id);
@@ -204,68 +175,60 @@ app.get('/student', async (req, res) => {
     }
 
     const student = studentData[0];
-    const studentInfo = ` ${student.fname} ${student.lname}, ${student.town}`;
-    const studentName = ` ${student.fname} ${student.lname} `;
-    const studentFname = ` ${student.fname}  `;
-    const studentLname = ` ${student.lname} `;
-    const studentTown = ` ${student.town} `;
+
+    const studentInfo = `${student.fname} ${student.lname}, ${student.town}`;
     const pageTitle = ` studentens namn ${student.fname} ${student.lname} `;
     const studentId = ` ${id}`;
 
-    res.render('student', { pageTitle, studentId, studentName, studentFname, studentLname, studentTown, studentInfo, dbData: coursesData });
+    // res.render('student', { id, col, dbData: coursesData });
+    res.render('student', { pageTitle, studentId, studentInfo, dbData: coursesData, dbData2: studentData });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error i nya');
   }
 });
 
 
+//Alla stundenter med vald parameter och deras kurser
+app.get('/students/:col/:value/:table', async (req, res) => {  
+  const {col, value, table} = req.params;
 
-//info för specifik parameter
-app.get('/moreinfo', async (req, res) => {
-  const { id, town, fname, lname } = req.query;
-
-  let sql = '';
-  let queryParams = [];
-  let paramName = '';
-
-  if (id) {
-    sql = `SELECT * FROM students WHERE id = ${id}`;
-    queryParams.push(id);
-  } else if (town) {
-    sql = `SELECT * FROM students WHERE town = '${town}'`;
-    queryParams.push(town);
-    paramName = 'bor i ' + town;
-  } else if (fname) {
-    sql = `SELECT * FROM students WHERE fname = '${fname}'`;
-    queryParams.push(fname);
-    paramName = 'heter ' + fname + ' i förnamn';
-  } else if (lname) {
-    sql = `SELECT * FROM students WHERE lname = '${lname}'`;
-    queryParams.push(lname);
-    paramName = 'heter ' + lname + ' i efternamn';
-  } else {
-    return res.status(400).send('A valid query parameter (id, town, fname, lname) is required');
-  }
+  const coursesSql= `SELECT courses.name FROM courses
+  JOIN students_courses ON courses.id = students_courses.courses_id
+  JOIN students ON students_courses.students_id = students.id
+  WHERE students.${col} = "${value}"; `;
+  
+  const studentSql = `SELECT fname, lname, town FROM students WHERE ${col} = "${value}"; `;
 
   try {
-    const dbData = await db.query(sql, queryParams);
+    const studentData = await db.query(studentSql, value);
+    const coursesData = await db.query(coursesSql, value);
 
-    if (dbData.length === 0) {
-      return res.status(404).send('No matching records found');
+    if (studentData.length === 0) {
+      return res.status(404).send('Student not found');
     }
 
-    const pageTitle = 'More Information on parameter';
-    console.log('dbData');
-    console.log(dbData);
-    res.render('moreinfo', { pageTitle, dbData, paramName });
+    if (coursesData.length === 0) {
+      return res.status(404).send('No courses found for this student');
+    }
+
+    const student = studentData[0];
+
+
+    const studentInfo = `${student.fname} ${student.lname}, ${student.town}`;
+    const pageTitle = ` studentens namn ${student.fname} ${student.lname} `;
+    const studentValue = ` ${value}`;
+
+    // res.render('student', { id, col, dbData: coursesData });
+    res.render('student', { pageTitle, studentValue, studentInfo, dbData: coursesData, dbData2: studentData });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error i col nya');
   }
 });
+
 
 
 
@@ -290,16 +253,13 @@ app.get('/courses', async (req, res) => {
 });
 
 
-
-//Course ID från URL - visar vila studenter som går vilken kurs
+//Course ID från URL - visar vilka studenter som går vilken kurs
 app.get('/course', async (req, res) => {
   const {id} = req.query; // Extract the id from the query parameters
 
   if (!id) {
     return res.status(400).send('ID is required');
   }
-
-  // const sql = `SELECT * FROM courses WHERE id = ${id}; `;
 
   const studentSql= `SELECT students.id, students.fName, students.lName FROM students
   JOIN students_courses ON students.id = students_courses.students_id
@@ -331,17 +291,6 @@ app.get('/course', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
-
-
-// //Säger att den ska till kursen som har x id och x col (och det blir en url utifrån req.params? )
-// app.get('/courses/:id/:col', async (req, res) => {
-//   // let sql = `SELECT ${req.params.col} FROM courses WHERE id = ${req.params.id}`;
-//   let sql = `SELECT ${req.params.col} FROM courses WHERE id = 1`;
-//   const dbData = await db.query(sql);
-//   res.json(dbData);
-// });
-
 
 
 

@@ -18,15 +18,9 @@
         <% for (const [key, value] of Object.entries(row)) { %>
           <td>
             <% if (key === 'id') { %>
-              <a href="/moreinfo?id=<%= value %>"><%= value %></a>
-            <% } else if (key === 'fName') { %>
-              <a href="/moreinfo?fname=<%= value %>"><%= value %></a>
-            <% } else if (key === 'lName') { %>
-              <a href="/moreinfo?lname=<%= value %>"><%= value %></a>
-            <% } else if (key === 'town') { %>
-              <a href="/moreinfo?town=<%= value %>"><%= value %></a>
+              <a href="/students/<%= value %>/courses"><%= value %></a>
             <% } else { %>
-              <%= value %>
+              <a href="/students/<%= key %>/<%= value %>/courses"><%= value %></a>
             <% } %>
           </td>
         <% } %>
@@ -69,7 +63,7 @@
         <% const queryParams = `id=${studentId}&fname=${fname}&lname=${lname}&town=${town}`; %>
         <% for (const [key, value] of Object.entries(row)) { %>
         <td>
-          <a href="/student?<%= queryParams %>"><%= value %></a>
+          <a href="/students/<%= row.id %>/courses"><%= value %></a>
         </td>
         <% } %> 
 

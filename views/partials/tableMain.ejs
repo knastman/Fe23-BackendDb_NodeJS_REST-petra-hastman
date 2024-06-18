@@ -26,15 +26,9 @@
             <% for (const row of dbData ){%>
                <!-- STUDENT LIST -->  
               <% if(tableName == 'students'){ %> 
-                <% const studentId = row.id; %>
-                <% const fname = row.fName; %>
-                <% const lname = row.lName; %>
-                <% const town = row.town; %>
-                <% const queryParams = `id=${studentId}&fname=${fname}&lname=${lname}&town=${town}`; %>
-                <% const queryParamsEdit = `id=${studentId}`; %>
                 <% for (const [key, value] of Object.entries(row)) { %>
                   <td>
-                    <a href="/student?<%= queryParams %>"><%= value %></a>
+                    <a href="/students/<%= row.id %>/courses"><%= value %></a>
                   </td>
                 <% } %> 
               <% } %> 

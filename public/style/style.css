@@ -241,19 +241,12 @@ button{
   /* padding-right:1%;   */
 }
 .databaseTable td, .databaseTable th {
-  /* padding-bottom: 1%;
-  padding-top: 1%;
-  padding-left:1%; */
   padding:1%; 
 }
 
 .databaseTable td, .databaseTableParam td {
   font-weight: normal;
   font-size: 1rem;
-  /* -webkit-box-shadow: 0 2px 2px -2px #0E1119;
-  -moz-box-shadow: 0 2px 2px -2px #0E1119;
-  box-shadow: 0 2px 2px -2px #0E1119; */
-  /* max-width: 130px; */
 }
 .databaseTable td:nth-child(1) {
   /* background-color: #5584e2; */
@@ -305,6 +298,15 @@ button{
 .databaseTable tr:hover {
   background-color: #858c98;
 }
+
+.databaseTable td ul {
+  padding-left:10px;
+  margin:15px;;
+  text-align: left;
+}
+
+
+
 
 
 /**** LINKS ***** BUTTONS *****/
