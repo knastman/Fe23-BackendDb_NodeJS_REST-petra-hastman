@@ -56,7 +56,6 @@ app.post('/', async (req, res) => {
     res.render('index', {pageTitle,tableName, dbData, dbTables, errorMsg});
 
   }
-
   else{
     errorMsg = "table name missing";
     dbData = [{}];
@@ -73,19 +72,19 @@ app.post('/', async (req, res) => {
 //ID från URL
 app.get('/editData', async (req, res) => {
   const {id, table} = req.query;
-  let successMsg ='Redigera nedan';
+  let successMsg ='';
+  const msg ='Redigera nedan';
 
   if (!id) {
     return res.status(400).send('ID is required');
   }
 
   const sql = `SELECT * FROM ${table} WHERE id = ${id}; `;
-  // console.log('sql i get editdata get');
-  // console.log(sql);
+
 
   try {
     const dbData = await db.query(sql);
-    res.render('editData', { table, id, dbData, successMsg });
+    res.render('editData', { table, id, dbData, msg, successMsg });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);
@@ -98,26 +97,30 @@ app.post('/editData', async (req, res) => {
   let id = req.body.editBtn.split(",")[1];
   let table = req.body.editBtn.split(",")[0];
 
-  let successMsg ='Edit data';
+  const msg ='Redigera nedan';
+  let successMsg ='';
   let sql = '';
   let dbData = null;
-    for (const [key, value] of Object.entries(req.body)) {
-      if (key !== 'editBtn' && key !== 'id'){
-        sql = `UPDATE ${table} SET ${key}="${value}" WHERE id=${id}`;
-        try {
-          dbData = await db.query(sql, id);
-      
-        } catch (error) {
-          console.error('Error executing SQL query:', error);
-          res.status(500).send('Internal Server Error');
-        }
+
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key !== 'editBtn' && key !== 'id'){
+      sql = `UPDATE ${table} SET ${key}="${value}" WHERE id=${id}`;
+      try {
+        dbData = await db.query(sql, id);
+        successMsg ='Posten har blivit redigerad';
+    
+      } catch (error) {
+        console.error('Error executing SQL query:', error);
+        res.status(500).send('Internal Server Error');
       }
     }
+  }
+    
 
     sql = `SELECT * FROM ${table} WHERE id = ${id}; `;
     dbData = await db.query(sql, id);
-    successMsg ='Posten har blivit redigerad';
-    res.render('editData', { successMsg, id, table, dbData });
+    
+    res.render('editData', { msg, successMsg, id, table, dbData });
 
 });
 
@@ -129,9 +132,8 @@ app.post('/editData', async (req, res) => {
 
 //ALL data - students
 app.get('/students', async (req, res) => {
-  const table =  "students";
   const pageTitle = "All student data";
-  const sql = `SELECT * FROM ${table}`;
+  const sql = `SELECT * FROM students`;
 
   try {
     const dbData = await db.query(sql); 
@@ -157,7 +159,7 @@ app.get('/students/:id/courses', async (req, res) => {
   JOIN students ON students_courses.students_id = students.id
   WHERE students.id = ${id}; `;
   
-  const studentSql = `SELECT fname, lname, town FROM students WHERE id = ${id}; `;
+  const studentSql = `SELECT fname, lname FROM students WHERE id = ${id}; `;
   // const sql = `SELECT * FROM students WHERE id=${id}`;
   console.log('studentSql');
   console.log(studentSql);
@@ -175,13 +177,11 @@ app.get('/students/:id/courses', async (req, res) => {
     }
 
     const student = studentData[0];
+    console.log('student');
+    console.log(student);
+    const pageTitle = ` ${student.fname} ${student.lname} `;
 
-    const studentInfo = `${student.fname} ${student.lname}, ${student.town}`;
-    const pageTitle = ` studentens namn ${student.fname} ${student.lname} `;
-    const studentId = ` ${id}`;
-
-    // res.render('student', { id, col, dbData: coursesData });
-    res.render('student', { pageTitle, studentId, studentInfo, dbData: coursesData, dbData2: studentData });
+    res.render('student', { pageTitle, dbData: coursesData, dbData2: studentData });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);
@@ -190,45 +190,61 @@ app.get('/students/:id/courses', async (req, res) => {
 });
 
 
-//Alla stundenter med vald parameter och deras kurser
-app.get('/students/:col/:value/:table', async (req, res) => {  
-  const {col, value, table} = req.params;
 
-  const coursesSql= `SELECT courses.name FROM courses
-  JOIN students_courses ON courses.id = students_courses.courses_id
-  JOIN students ON students_courses.students_id = students.id
-  WHERE students.${col} = "${value}"; `;
+//Alla stundenter med vald parameter och deras kurser
+app.get('/students/:col/:value/:table', async (req, res) => { 
+  const { col, value, table } = req.params;
+
+  let title = '';
+  if (col == 'town'){
+    title = `bor i ${value}`;
+  } 
+  else if (col == 'fName'){
+    title = `heter ${value} i förnamn`;
+  } 
+  else if (col == 'lName'){
+    title = `heter ${value} i efternamn`;
+  } 
+  const titleStart = 'Alla studenter som';
+  const titleEnd = 'och deras kurser';
+  const pageTitle = `${titleStart} ${title} ${titleEnd}`;
+
+
+  // Fetch students based on the given column and value
+  const studentSql = `SELECT id, fname, lname, town FROM students WHERE ${col} = "${value}" `;
   
-  const studentSql = `SELECT fname, lname, town FROM students WHERE ${col} = "${value}"; `;
+  // Fetch courses based on student ids
+  const coursesSql = `SELECT students_courses.students_id, courses.name FROM courses
+  JOIN students_courses ON courses.id = students_courses.courses_id
+  WHERE students_courses.students_id IN ( SELECT id FROM students WHERE ${col} = "${value}")`;
 
   try {
-    const studentData = await db.query(studentSql, value);
-    const coursesData = await db.query(coursesSql, value);
+    const studentData = await db.query(studentSql, [value]);
+    const coursesData = await db.query(coursesSql, [value]);
 
-    if (studentData.length === 0) {
-      return res.status(404).send('Student not found');
-    }
+    // Group courses by student id
+    const coursesByStudent = coursesData.reduce((acc, course) => {
+      if (!acc[course.students_id]) {
+        acc[course.students_id] = [];
+      }
+      acc[course.students_id].push(course.name);
+      return acc;
+    }, {});
 
-    if (coursesData.length === 0) {
-      return res.status(404).send('No courses found for this student');
-    }
+    // Attach courses to each student
+    const studentsWithCourses = studentData.map(student => ({
+      ...student,
+      courses: coursesByStudent[student.id] || []
+    }));
 
-    const student = studentData[0];
-
-
-    const studentInfo = `${student.fname} ${student.lname}, ${student.town}`;
-    const pageTitle = ` studentens namn ${student.fname} ${student.lname} `;
-    const studentValue = ` ${value}`;
-
-    // res.render('student', { id, col, dbData: coursesData });
-    res.render('student', { pageTitle, studentValue, studentInfo, dbData: coursesData, dbData2: studentData });
+    res.render('studentsCourses', { studentsWithCourses, pageTitle });
 
   } catch (error) {
     console.error('Error executing SQL query:', error);
-    res.status(500).send('Internal Server Error i col nya');
+    res.status(500).send('Internal Server Error');
   }
 });
-
+  
 
 
 
@@ -237,10 +253,10 @@ app.get('/students/:col/:value/:table', async (req, res) => {
 *********************/
 
 
-//ALL data 
+//ALL kursdata 
 app.get('/courses', async (req, res) => {
   const pageTitle = "All courses data";
-  const sql = `SELECT * FROM courses`;
+  const sql = `SELECT id, name AS Kursnamn, description AS Kursbeskrivning FROM courses`;
 
   try {
     const dbData = await db.query(sql); 
@@ -253,7 +269,7 @@ app.get('/courses', async (req, res) => {
 });
 
 
-//Course ID från URL - visar vilka studenter som går vilken kurs
+//Course ID från URL - visar vilka studenter som går i en specifik kurs
 app.get('/course', async (req, res) => {
   const {id} = req.query; // Extract the id from the query parameters
 

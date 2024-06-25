@@ -1,0 +1,37 @@
+<%- include('partials/head') %>
+<body>
+  <%- include('partials/headerNav') %>
+  <main>
+
+    <h2>Studentinfo</h2>
+    <h3 style="text-align: center;"> <%= pageTitle; %> </h3>
+    
+    <% if (studentsWithCourses.length) { %>
+      <table class="databaseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Kurser</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% studentsWithCourses.forEach(student => { %>
+            <tr>
+              <td><%= student.id%> </td>
+              <td><%= student.fname %> <%= student.lname %>, <%= student.town %></td>
+              <td>
+                <% student.courses.forEach(course => { %>
+                  <div><%= course %></div>
+                <% }) %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No students found.</p>
+    <% } %>
+
+  </main>  
+  <%- include('partials/footer') %>
